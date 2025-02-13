@@ -50,18 +50,22 @@ python-dotenv==1.0.1
     ```bash
     make create-db
     ```
+5. Run unit tests on application:
+    ```bash
+    make test
+    ```
 
-5. Apply database migrations:
+6. Apply database migrations:
     ```bash
     make migrate
     ```
 
-6. Run the application:
+7. Run the application:
     ```bash
     make run
     ```
 
-7. The API will be available at `http://127.0.0.1:5000/`.
+8. The API will be available at `http://127.0.0.1:5000/`.
 
 ## API Endpoints
 
