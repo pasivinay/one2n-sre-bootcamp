@@ -48,7 +48,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:5000/api/v1/students/1",
+					"raw": "http://127.0.0.1:5000/api/v1/students/2",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -61,7 +61,7 @@
 						"api",
 						"v1",
 						"students",
-						"1"
+						"2"
 					]
 				}
 			},
@@ -71,7 +71,32 @@
 			"name": "Add a new student",
 			"request": {
 				"method": "POST",
-				"header": []
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Janet\",\n    \"age\": 21\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/api/v1/students",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"students"
+					]
+				}
 			},
 			"response": []
 		},
@@ -79,7 +104,33 @@
 			"name": "Update a student's information",
 			"request": {
 				"method": "PUT",
-				"header": []
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Janet\",\n    \"age\": 20\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000/api/v1/students/3",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"students",
+						"3"
+					]
+				}
 			},
 			"response": []
 		},
@@ -87,7 +138,24 @@
 			"name": "Delete a student",
 			"request": {
 				"method": "DELETE",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/api/v1/students/6",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"students",
+						"6"
+					]
+				}
 			},
 			"response": []
 		},
@@ -95,7 +163,23 @@
 			"name": "Health Check",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/api/v1/healthchecks",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"v1",
+						"healthchecks"
+					]
+				}
 			},
 			"response": []
 		}
