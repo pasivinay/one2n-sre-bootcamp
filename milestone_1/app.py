@@ -1,9 +1,12 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 import os
+from dotenv import load_dotenv
 import logging
 from flask_migrate import Migrate
 from logging.config import dictConfig
+
+load_dotenv()
 
 dictConfig({
     'version': 1,
