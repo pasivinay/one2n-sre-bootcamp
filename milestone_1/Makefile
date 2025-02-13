@@ -1,3 +1,5 @@
+.PHONY : install run migrate test create-db
+
 install:
 	pip install -r requirements.txt
 
