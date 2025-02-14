@@ -108,47 +108,6 @@ python-dotenv==1.0.1
 - **Description:** Checks if the API is running properly.
 
 
-## Postman Demo
-
-Below are snapshots demonstrating the working of the CRUD API. These images can be found in `./postman_collection/postman_snapshots`.
-
-1. **Get all students** - Initially, the list is empty.
-   ![image](./milestone_1/postman_collection/postman_snapshots/1-get-all-students-empty.png)
-
-2. **Get a specific student by ID** - Response shows "student not found".
-   ![image](./milestone_1/postman_collection/postman_snapshots/2-get-student-not-found.png)
-
-3. **Add a new student** using `POST` request.
-   ![image](./milestone_1/postman_collection/postman_snapshots/3-add-student.png)
-
-4. **Get all students** - Now it shows the added student.
-   ![image](./milestone_1/postman_collection/postman_snapshots/4-get-all-students-after-addition.png)
-
-5. **Get a specific student by ID** - Returns the student details.
-   ![image](./milestone_1/postman_collection/postman_snapshots/5-get-student-by-id.png)
-
-6. **Add another student**.
-   ![image](./milestone_1/postman_collection/postman_snapshots/6-add-another-student.png)
-
-7. **Get all students** - Shows multiple students.
-   ![image](./milestone_1/postman_collection/postman_snapshots/7-get-all-students-multiple.png)
-
-8. **Update student details** using `PUT` request.
-   ![image](./milestone_1/postman_collection/postman_snapshots/8-update-student.png)
-
-9. **Get updated student details**.
-   ![image](./milestone_1/postman_collection/postman_snapshots/9-get-updated-student.png)
-
-10. **Delete a student** using `DELETE` request.
-    ![image](./milestone_1/postman_collection/postman_snapshots/10-delete-student.png)
-
-11. **Get all students** - Confirms student deletion.
-    ![image](./milestone_1/postman_collection/postman_snapshots/11-get-all-after-delete.png)
-
-12. **Run health check request**.
-    ![image](./milestone_1/postman_collection/postman_snapshots/12-healthcheck.png)
-
-
 ## Using Postman for API Testing
 
 1. Open Postman and import the collection file:
