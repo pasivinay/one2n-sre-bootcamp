@@ -12,3 +12,26 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copy application files
 COPY . .
 
+# Stage 2: Runtime Stage
+FROM python:3.12-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy installed Python packages from builder
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+COPY --from=builder /app /app
+
+# Expose the API port
+EXPOSE 5000
+
+# Create Database Instance
+RUN python3 /app/create-db.py
+
+# Set environment variables
+ENV FLASK_APP=app.py
+ENV FLASK_RUN_HOST=0.0.0.0
+
+# Start the application
+CMD ["flask", "run"]
