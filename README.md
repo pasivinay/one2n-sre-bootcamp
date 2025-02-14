@@ -5,10 +5,9 @@
 ### **Milestone 1:  Create a simple REST API Webserver**
 Milestone 1 includes the foundational implementation of the Student CRUD API.
 
-#### **Setup Instructions for Milestone 1**
-To get started with Milestone 1, navigate to the `milestone_1` directory and follow the instructions in the README file located there.
+### **Milestone 2:  Containerise REST API**
+Milestone 2 focuses on containerization of the Student CRUD API.
 
-```sh
-cd milestone_1
-cat README.md  # Follow the setup instructions
-```
+
+### **Setup Instructions for Milestones**
+To get started with specific milestone, navigate to the respective directory and follow the instructions in the README file located there.
