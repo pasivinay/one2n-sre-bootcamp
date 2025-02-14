@@ -140,7 +140,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:5000/api/v1/students/6",
+					"raw": "http://127.0.0.1:5000/api/v1/students/2",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -165,7 +165,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:5000/api/v1/healthchecks",
+					"raw": "http://127.0.0.1:5000/api/v1/healthcheck",
 					"protocol": "http",
 					"host": [
 						"127",
