@@ -32,10 +32,10 @@ python-dotenv==1.0.1
 
 ## Setup Instructions
 
-1. Clone the repository and switch to `milestone_1` branch:
+1. Clone the repository and switch to `milestone_2` branch:
     ```bash
-    git clone --branch milestone_1 https://github.com/pasivinay/one2n-sre-bootcamp.git
-    cd one2n-sre-bootcamp/milestone_1
+    git clone --branch milestone_2 https://github.com/pasivinay/one2n-sre-bootcamp.git
+    cd one2n-sre-bootcamp/milestone_2
     ```
 
 2. Configure dockerhub credentials for docker :
@@ -43,34 +43,40 @@ python-dotenv==1.0.1
     echo <your-dockerhub-password> | docker login --username <your-dockerhub-username> --password-stdin
     ```
 
-3. Build docker image
+3. Create and activate a virtual environment:
     ```bash
-    make build VERSION=1.0.0
+    python3 -m venv venv
+    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
     ```
 
-4. Tag and push image to a repository :
+4. Install dependencies:
     ```bash
-    make tag-push USERNAME=<your-dockerhub-username> VERSION=1.0.0
+    make install
     ```
+
+> **_NOTE:_**  Please configure your environment variables(`.env`) file before building the docker image. An example `.env` file is provided as `.example.env`. Copy the example file to `.env` file and modify as required.
 
 5. Run unit tests on application:
     ```bash
     make test
     ```
 
-6. Apply database migrations:
+6. Build docker image
     ```bash
-    make migrate
+    make build VERSION=1.0.0
     ```
 
-> **_NOTE:_**  Please configure your environment variables(.env) file before running the application
-
-7. Run the application:
+7. Tag and push image to a repository :
     ```bash
-    make run
+    make tag-push USERNAME=<your-dockerhub-username> VERSION=1.0.0
     ```
 
-8. The API will be available at `http://127.0.0.1:5000/`.
+8. Run the application:
+    ```bash
+    make run VERSION=1.0.0
+    ```
+
+9. The API will be available at `http://127.0.0.1:5000/`.
 
 ## API Endpoints
 
@@ -116,7 +122,7 @@ python-dotenv==1.0.1
 ## Using Postman for API Testing
 
 1. Open Postman and import the collection file:
-   - Navigate to `milestone_1/postman_collection/one2n-sre-bootcamp.postman_collection.json`
+   - Navigate to `milestone_2/postman_collection/one2n-sre-bootcamp.postman_collection.json`
    - Click **Import** in Postman and select this file.
 
 2. Execute API requests:
