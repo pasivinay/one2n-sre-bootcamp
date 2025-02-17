@@ -12,6 +12,9 @@ Before proceeding, ensure you have the following installed on your system:
 
 - Python 3.8+
 - pip (Python package manager)
+- Docker
+- Dockerhub account
+- Docker logged in with dockerhub account
 - Virtualenv (Recommended for managing dependencies)
 - Make (for executing build and run commands)
 - PostgreSQL or SQLite (for database)
@@ -35,21 +38,21 @@ python-dotenv==1.0.1
     cd one2n-sre-bootcamp/milestone_1
     ```
 
-2. Create and activate a virtual environment:
+2. Configure dockerhub credentials for docker :
     ```bash
-    python3 -m venv venv
-    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    echo <your-dockerhub-password> | docker login --username <your-dockerhub-username> --password-stdin
     ```
 
-3. Install dependencies:
+3. Build docker image
     ```bash
-    make install
+    make build VERSION=1.0.0
     ```
 
-4. Set up the database:
+4. Tag and push image to a repository :
     ```bash
-    make create-db
+    make tag-push USERNAME=<your-dockerhub-username> VERSION=1.0.0
     ```
+
 5. Run unit tests on application:
     ```bash
     make test
@@ -59,6 +62,8 @@ python-dotenv==1.0.1
     ```bash
     make migrate
     ```
+
+> **_NOTE:_**  Please configure your environment variables(.env) file before running the application
 
 7. Run the application:
     ```bash
