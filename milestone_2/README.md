@@ -1,4 +1,4 @@
-# Student CRUD API
+# Milestone 2 - Containerize REST API
 
 ## Project Description
 
