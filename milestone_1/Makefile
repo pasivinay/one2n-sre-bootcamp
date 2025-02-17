@@ -1,9 +1,13 @@
 # Declaring these targets as phony to indicate they are not actual files
-.PHONY: install run migrate test create-db
+.PHONY: install run migrate test create-db lint
 
 # Install all required dependencies from requirements.txt
 install:
 	pip install -r requirements.txt
+
+# Run linting on python files
+lint:
+	pylint *.py
 
 # Run the Flask application
 run:
