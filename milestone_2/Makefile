@@ -14,7 +14,17 @@ run:
 test:
 	pytest test_api.py --disable-warnings
 
+# 
+migrate:
+	# Initialize the database migration repository
+	flask db init
+	# Generate migration scripts based on detected changes in models
+	flask db migrate
+	# Apply migrations to update the database schema
+	flask db upgrade
+
+
 # Tag and push docker image to a repository
 tag-push:
-	sudo docker tag student-api:$(VERSION) <your-dockerhub-username>/student-api:$(VERSION)
-	sudo docker push <your-dockerhub-username>/student-api:$(VERSION)
+	sudo docker tag student-api:$(VERSION) $(USERNAME)/student-api:$(VERSION)
+	sudo docker push $(USERNAME)/student-api:$(VERSION)
