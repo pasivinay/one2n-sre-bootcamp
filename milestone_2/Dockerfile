@@ -10,7 +10,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy application files
-COPY . .
+COPY ./app .
 
 # Stage 2: Runtime Stage
 FROM python:3.12-alpine
