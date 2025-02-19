@@ -34,7 +34,7 @@ python-dotenv==1.0.1
 
 1. Clone the repository and switch to `milestone_2` branch:
     ```bash
-    git clone --branch milestone_2 https://github.com/pasivinay/one2n-sre-bootcamp.git
+    git clone https://github.com/pasivinay/one2n-sre-bootcamp.git
     cd one2n-sre-bootcamp/milestone_2
     ```
 
