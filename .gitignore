@@ -1,5 +1,5 @@
-*/instance
-*/migrations
 */__*__
-*/*.log
-*/.env
+*/app/*.log
+.env
+__pycache__
+.pytest_cache
