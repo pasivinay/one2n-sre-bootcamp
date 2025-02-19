@@ -8,7 +8,7 @@ install:
 
 
 # Build docker image for flask api
-build:
+build: migrate
 	sudo docker build -t student-api:$(VERSION) .
 
 
@@ -18,17 +18,15 @@ run:
 
 
 # Run unit tests using pytest
-test:
-	pytest test_api.py --disable-warnings
+test: install
+	pytest app/test_api.py --disable-warnings
 
 
 # Run DB schema migration on students database
 migrate:
-	# Initialize the database migration repository
-	flask db init
-	# Generate migration scripts based on detected changes in models
-	flask db migrate
-	# Apply migrations to update the database schema
+	cd app && \
+	flask db init && \
+	flask db migrate && \
 	flask db upgrade
 
 
