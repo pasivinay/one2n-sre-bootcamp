@@ -1,4 +1,4 @@
-# Milestone 2 - Containerize REST API
+# Milestone 3 - Setup one-click local development setup
 
 ## Project Description
 
@@ -63,22 +63,12 @@ python-dotenv==1.0.1
 
 > **_NOTE:_**  When tagging Docker images, always follow Semantic Versioning (SemVer) (e.g., `1.0.0`, `1.1.0`, `2.0.0`). Avoid using the `latest` tag as it can lead to inconsistencies and unexpected behavior. SemVer ensures clear version tracking and backward compatibility.
 
-6. Build docker image
+6. Start the application:
     ```bash
-    make build VERSION=1.0.0
+    make setup VERSION=1.0.0
     ```
 
-7. Tag and push image to a repository :
-    ```bash
-    make tag-push USERNAME=<your-dockerhub-username> VERSION=1.0.0
-    ```
-
-8. Run the application:
-    ```bash
-    make run VERSION=1.0.0
-    ```
-
-9. The API will be available at `http://127.0.0.1:5000/`.
+7. The API will be available at `http://127.0.0.1:5000/`.
 
 ## API Endpoints
 
