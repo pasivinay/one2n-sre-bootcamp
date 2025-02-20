@@ -34,7 +34,7 @@ python-dotenv==1.0.1
 
 1. Clone the repository and switch to `milestone_2` branch:
     ```bash
-    git clone --branch milestone_2 https://github.com/pasivinay/one2n-sre-bootcamp.git
+    git clone https://github.com/pasivinay/one2n-sre-bootcamp.git
     cd one2n-sre-bootcamp/milestone_2
     ```
 
@@ -60,6 +60,8 @@ python-dotenv==1.0.1
     ```bash
     make test
     ```
+
+> **_NOTE:_**  When tagging Docker images, always follow Semantic Versioning (SemVer) (e.g., `1.0.0`, `1.1.0`, `2.0.0`). Avoid using the `latest` tag as it can lead to inconsistencies and unexpected behavior. SemVer ensures clear version tracking and backward compatibility.
 
 6. Build docker image
     ```bash
