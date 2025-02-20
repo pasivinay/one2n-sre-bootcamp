@@ -61,6 +61,8 @@ python-dotenv==1.0.1
     make test
     ```
 
+> **_NOTE:_**  When tagging Docker images, always follow Semantic Versioning (SemVer) (e.g., `1.0.0`, `1.1.0`, `2.0.0`). Avoid using the `latest` tag as it can lead to inconsistencies and unexpected behavior. SemVer ensures clear version tracking and backward compatibility.
+
 6. Build docker image
     ```bash
     make build VERSION=1.0.0
