@@ -32,10 +32,10 @@ python-dotenv==1.0.1
 
 ## Setup Instructions
 
-1. Clone the repository and switch to `milestone_2` branch:
+1. Clone the repository and switch to `milestone_3` branch:
     ```bash
     git clone https://github.com/pasivinay/one2n-sre-bootcamp.git
-    cd one2n-sre-bootcamp/milestone_2
+    cd one2n-sre-bootcamp/milestone_3
     ```
 
 2. Configure dockerhub credentials for docker :
@@ -114,7 +114,7 @@ python-dotenv==1.0.1
 ## Using Postman for API Testing
 
 1. Open Postman and import the collection file:
-   - Navigate to `milestone_2/postman_collection/one2n-sre-bootcamp.postman_collection.json`
+   - Navigate to `milestone_3/postman_collection/one2n-sre-bootcamp.postman_collection.json`
    - Click **Import** in Postman and select this file.
 
 2. Execute API requests:
