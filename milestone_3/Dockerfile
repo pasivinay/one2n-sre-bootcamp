@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 # Copy application files
 COPY --chown=flask ./app .
-
+COPY .env /app/
 
 # Stage 2: Runtime Stage
 FROM builder
