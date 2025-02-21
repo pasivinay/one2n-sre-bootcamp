@@ -7,14 +7,9 @@ install:
 	pip install -r requirements.txt
 
 # Run unit tests using pytest
-test: install
-	pytest app/test_api.py --disable-warnings
+test:
+	DATABASE_URL=sqlite:///:memory: pytest app/test_api.py --disable-warnings
 
-set-env:
-	python3 -m venv venv
-	. venv/bin/activate
-
-# Run linting on python files
 lint:
 	pylint -E ./app/*.py
 
@@ -46,8 +41,14 @@ migrate-db:
 	fi
 
 # Build the API Docker image
-build-api: install
+build-api:
 	docker build -t student-api:$(VERSION) .
+
+
+# Tag and push docker image to a repository
+tag-push:
+	sudo docker tag student-api:$(VERSION) $(USERNAME)/student-api:$(VERSION)
+	sudo docker push $(USERNAME)/student-api:$(VERSION)
 
 # Start the API container
 start-api:
@@ -70,4 +71,3 @@ stop:
 clean:
 	sudo docker compose down -v
 	sudo rm -rf ./app/__pycache__ ./app/.pytest_cache
-	# sudo rm -rf ./app/migrations ./app/instance mysql_data
