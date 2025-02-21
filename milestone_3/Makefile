@@ -8,7 +8,7 @@ install:
 
 # Run unit tests using pytest
 test: install
-	pytest app/test_api.py --disable-warnings
+	DATABASE_URL='sqlite:///:memory:' pytest app/test_api.py --disable-warnings
 
 
 # Run linting on python files
@@ -54,8 +54,10 @@ start-api:
 # One-click setup: Start DB, apply migrations, then start API
 setup:
 	make start-db
+	echo "DATABASE_URL=sqlite:///students.db" > app/.env
 	make init-db
 	make migrate-db
+	sudo rm -rf app/.env
 	make build-api
 	make start-api
 
@@ -67,4 +69,3 @@ stop:
 clean:
 	sudo docker compose down -v
 	sudo rm -rf ./app/__pycache__ ./app/.pytest_cache
-	# sudo rm -rf ./app/migrations ./app/instance mysql_data
