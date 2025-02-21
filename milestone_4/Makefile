@@ -10,6 +10,9 @@ install:
 test: install
 	pytest app/test_api.py --disable-warnings
 
+set-env:
+	python3 -m venv venv
+	. venv/bin/activate
 
 # Run linting on python files
 lint:
@@ -43,7 +46,7 @@ migrate-db:
 	fi
 
 # Build the API Docker image
-build-api: lint
+build-api: install
 	docker build -t student-api:$(VERSION) .
 
 # Start the API container
