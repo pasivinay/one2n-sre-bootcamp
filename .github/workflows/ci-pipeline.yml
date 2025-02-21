@@ -1,0 +1,65 @@
+name: CI Pipeline
+
+on:
+  push:
+    paths:
+      - 'milestone_4'      # Trigger only when changes are made in the API directory
+      - '.github/workflows/ci-pipeline.yml'  # Also trigger if the CI config changes
+  workflow_dispatch:   # Allow manual trigger
+
+jobs:
+  build:
+    runs-on: self-hosted   # Use the self-hosted runner
+    defaults:
+      run:
+        working-directory: ./milestone_4
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build API Image
+        run: |
+          sudo make build-api
+
+  test:
+    runs-on: self-hosted
+    needs: build
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Tests
+        run: |
+          sudo make test-api
+
+  lint:
+    runs-on: self-hosted
+    needs: build
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Code Linting
+        run: |
+          sudo make lint-api
+
+  push:
+    runs-on: self-hosted
+    needs: [test, lint]
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Login to DockerHub
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | sudo docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build and Push Docker Image
+        run: |
+          sudo make push-api
