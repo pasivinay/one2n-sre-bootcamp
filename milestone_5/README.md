@@ -1,4 +1,4 @@
-# Milestone 3 - Setup one-click local development setup
+# Milestone 5 - Deploy REST API & its dependent services on bare metal
 
 ## Project Description
 
@@ -13,6 +13,8 @@ Before proceeding, ensure you have the following installed on your system:
 - Python 3.8+
 - pip (Python package manager)
 - Docker
+- Vagrant
+- Oracle VirtualBox
 - Dockerhub account
 - Docker logged in with dockerhub account
 - Virtualenv (Recommended for managing dependencies)
@@ -35,22 +37,31 @@ PyMySQL==1.1.1
 
 ## Setup Instructions
 
-1. Clone the repository and switch to `milestone_4` branch:
+> **_NOTE:_**  Please configure your environment variables(`.env`) file before building the docker image. An example `.env` file is provided as `.example.env`. Copy the example file to `.env` file and modify as required.
+
+1. Clone the repository and switch to `milestone_5` branch:
     ```bash
     git clone https://github.com/pasivinay/one2n-sre-bootcamp.git
-    cd one2n-sre-bootcamp/milestone_4
+    cd one2n-sre-bootcamp/milestone_5
     ```
 
-## Automatic Trigger  
-The GitHub Actions workflow is automatically triggered when changes are made within the `milestone_4/app` directory. Simply modify any necessary files, commit the changes, and push them to the repository. This will initiate the CI pipeline.
+2. Start the Vagrant VM:
+    ```bash
+    vagrant up
+    ```
 
-## Manual Trigger  
-If needed, you can manually trigger the workflow from the GitHub Actions interface:  
-1. Navigate to your repository on GitHub.  
-2. Click on the **"Actions"** tab.  
-3. Select the workflow named **"CI Pipeline"**.  
-4. Click on the **"Run workflow"** button.  
-5. Choose the branch (if applicable) and confirm the execution.
+3. Provision the VM to start the api server:
+    ```bash
+    vagrant provision
+    ```
+
+4. For troubleshooting, connect to the vm with:
+    ```bash
+    vagrant ssh
+    ```
+
+5. The API will be available at `http://127.0.0.1:8080/`.
+
 
 ## Additional Information  
 - The workflow configuration can be found in `.github/workflows/ci-pipeline.yml`.  
@@ -105,7 +116,7 @@ For any modifications to the pipeline, update the `.yml` file accordingly and co
 ## Using Postman for API Testing
 
 1. Open Postman and import the collection file:
-   - Navigate to `milestone_4/postman_collection/one2n-sre-bootcamp.postman_collection.json`
+   - Navigate to `milestone_5/postman_collection/one2n-sre-bootcamp.postman_collection.json`
    - Click **Import** in Postman and select this file.
 
 2. Execute API requests:
