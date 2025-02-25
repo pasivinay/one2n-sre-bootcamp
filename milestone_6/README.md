@@ -45,23 +45,33 @@ PyMySQL==1.1.1
     cd one2n-sre-bootcamp/milestone_5
     ```
 
-2. Start the Vagrant VM:
+2. Install Minikube & kubectl
     ```bash
-    vagrant up
+    curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+    sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+    # Install kubectl
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    chmod +x kubectl
+    sudo mv kubectl /usr/local/bin/
     ```
 
-3. Provision the VM to start the api server:
+3. Start a Three-Node Minikube Cluster:
     ```bash
-    vagrant provision
+    minikube start --nodes 3 --driver=docker
     ```
 
-4. For troubleshooting, connect to the vm with:
+4. Label the Nodes:
     ```bash
-    vagrant ssh
+    kubectl label nodes minikube type=application
+    kubectl label nodes minikube-m02 type=database
+    kubectl label nodes minikube-m03 type=dependent_services
     ```
 
-5. The API will be available at `http://127.0.0.1:8080/`.
-
+5. Verify the label on the nodes with:
+    ```bash
+    kubectl get nodes -L type
+    ```
 
 ## Additional Information  
 - The workflow configuration can be found in `.github/workflows/ci-pipeline.yml`.  
