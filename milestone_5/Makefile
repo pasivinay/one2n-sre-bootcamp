@@ -40,6 +40,10 @@ migrate-db:
 	    flask db migrate && flask db upgrade; \
 	fi
 
+migrate:
+	make init-db
+	DATABASE_URL=sqlite:///dummy.db make migrate-db
+
 # Build the API Docker image
 build-api:
 	docker build -t student-api:$(VERSION) .
