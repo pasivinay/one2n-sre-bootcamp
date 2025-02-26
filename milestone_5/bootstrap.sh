@@ -23,19 +23,6 @@ configure_user() {
     sudo usermod -aG docker vagrant
 }
 
-setup_virtualenv() {
-    echo "Activating Python virtual environment..."
-    sudo python3 -m venv /vagrant/venv
-    . /vagrant/venv/bin/activate
-}
-
-install_dependencies() {
-    echo "Installing dependencies..."
-    pip install -r /vagrant/requirements.txt
-}
-
-
-
 deploy_application() {
     echo "Deploying application..."
     cd /vagrant/
@@ -47,8 +34,6 @@ main() {
     install_packages
     start_docker
     configure_user
-    setup_virtualenv
-    install_dependencies
     deploy_application
 
     echo "Deployment setup completed!"
