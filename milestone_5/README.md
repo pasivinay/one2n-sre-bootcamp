@@ -45,22 +45,41 @@ PyMySQL==1.1.1
     cd one2n-sre-bootcamp/milestone_5
     ```
 
-2. Start the Vagrant VM:
+2. Create and activate a virtual environment:
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    ```
+
+3. Install dependencies:
+    ```bash
+    make install
+    ```
+4. Run unit tests on application:
+    ```bash
+    make test
+    ```
+5. Run database migration initialization:
+    ```bash
+    make migrate
+    ```
+
+6. Start the Vagrant VM:
     ```bash
     vagrant up
     ```
 
-3. Provision the VM to start the api server:
+7. Provision the VM to start the api server:
     ```bash
     vagrant provision
     ```
 
-4. For troubleshooting, connect to the vm with:
+8. For troubleshooting, connect to the vm with:
     ```bash
     vagrant ssh
     ```
 
-5. The API will be available at `http://127.0.0.1:8080/`.
+9. The API will be available at `http://127.0.0.1:8080/`.
 
 
 ## Additional Information  
