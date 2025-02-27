@@ -20,9 +20,6 @@ spec:
           image: mysql:8.0-oracle
           ports:
             - containerPort: 3306
-          envFrom:
-            - configMapRef:
-                name: db-config
           env:
             - name: MYSQL_USER
               valueFrom:
