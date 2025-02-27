@@ -61,7 +61,7 @@ PyMySQL==1.1.1
     To access Vault locally, port-forward the service to port `8200` and export VAULT_ADDR:
 
     ```bash
-    kubectl port-forward svc/vault -n external-secrets 8200:8200 &
+    kubectl port-forward svc/vault -n vault 8200:8200 &
 
     export VAULT_ADDR=http://127.0.0.1:8200
     ```
@@ -135,9 +135,7 @@ This will return an unseal key and a root token.
 6. Deploy ClusterSecretStore and ExternalSecret Resources:
 
     ```bash
-    kubectl create -f ./k8s-manifests/eso/cluster-secret-store.yml
-
-    kubectl create -f ./k8s-manifests/eso/external-secret.yml 
+    kubectl create -f ./k8s-manifests/eso/cluster-secret-store.yml && kubectl create -f ./k8s-manifests/eso/external-secret.yml 
     ```
 
 7. Deploy Database Manifest:
