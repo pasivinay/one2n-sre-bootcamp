@@ -2,9 +2,7 @@
 
 ## Project Description
 
-This project is a simple CRUD API designed for managing student records. The API is built using Python and Flask, following best practices for RESTful API design and the Twelve-Factor App methodology. It provides functionality to create, read, update, and delete student records while ensuring proper API versioning, structured logging, and configuration management using environment variables.
-
-The API is container-ready, follows dependency management practices, and supports database migrations to maintain schema consistency.
+This project focuses on deploying a REST API and its dependent services using Vagrant as the production environment. The deployment is automated using docker-compose and Makefile, ensuring a seamless setup.
 
 ## Prerequisites
 
