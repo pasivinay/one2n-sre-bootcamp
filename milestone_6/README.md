@@ -1,10 +1,18 @@
-# Milestone 5 - Deploy REST API & its dependent services on bare metal
+# Milestone 6 - Setup Kubernetes cluster
 
 ## Project Description
 
-This project is a simple CRUD API designed for managing student records. The API is built using Python and Flask, following best practices for RESTful API design and the Twelve-Factor App methodology. It provides functionality to create, read, update, and delete student records while ensuring proper API versioning, structured logging, and configuration management using environment variables.
+This setup provisions a three-node Kubernetes cluster using Minikube on your local machine. The cluster will be treated as a production-like environment for deploying applications, databases, and dependent services.
 
-The API is container-ready, follows dependency management practices, and supports database migrations to maintain schema consistency.
+## Cluster Node Configuration
+
+The cluster will consist of three nodes with specific roles:
+
+`Node A`: Dedicated for application deployment.
+
+`Node B`: Hosts the database.
+
+`Node C`: Runs dependent services such as the observability stack and Vault for secret management.
 
 ## Prerequisites
 
@@ -37,12 +45,11 @@ PyMySQL==1.1.1
 
 ## Setup Instructions
 
-> **_NOTE:_**  Please configure your environment variables(`.env`) file before building the docker image. An example `.env` file is provided as `.example.env`. Copy the example file to `.env` file and modify as required.
 
-1. Clone the repository and switch to `milestone_5` branch:
+1. Clone the repository and switch to `milestone_6` branch:
     ```bash
     git clone https://github.com/pasivinay/one2n-sre-bootcamp.git
-    cd one2n-sre-bootcamp/milestone_5
+    cd one2n-sre-bootcamp/milestone_6
     ```
 
 2. Install Minikube & kubectl
@@ -72,64 +79,3 @@ PyMySQL==1.1.1
     ```bash
     kubectl get nodes -L type
     ```
-
-## Additional Information  
-- The workflow configuration can be found in `.github/workflows/ci-pipeline.yml`.  
-- Ensure you have the necessary environment variables and secrets configured in your repository settings (`Settings → Secrets and variables → Actions`).  
-- You can monitor workflow progress, view logs, and troubleshoot failures from the **Actions** tab.
-
-For any modifications to the pipeline, update the `.yml` file accordingly and commit the changes.
-
-
-
-## API Endpoints
-
-### 1. Get all students
-- **Endpoint:** `GET /api/v1/students`
-- **Description:** Fetches all student records from the database.
-
-### 2. Get a student by ID
-- **Endpoint:** `GET /api/v1/students/<id>`
-- **Description:** Retrieves details of a specific student by their unique ID.
-
-### 3. Add a new student
-- **Endpoint:** `POST /api/v1/students`
-- **Description:** Adds a new student to the database.
-- **Request Body (JSON Example):**
-    ```json
-    {
-        "name": "John Doe",
-        "age": 21
-    }
-    ```
-
-### 4. Update student details
-- **Endpoint:** `PUT /api/v1/students/<id>`
-- **Description:** Updates the details of an existing student.
-- **Request Body (JSON Example):**
-    ```json
-    {
-        "name": "John Updated",
-        "age": 22
-    }
-    ```
-
-### 5. Delete a student
-- **Endpoint:** `DELETE /api/v1/students/<id>`
-- **Description:** Deletes a student record from the database.
-
-### 6. Health check
-- **Endpoint:** `GET /api/v1/healthcheck`
-- **Description:** Checks if the API is running properly.
-
-
-## Using Postman for API Testing
-
-1. Open Postman and import the collection file:
-   - Navigate to `milestone_5/postman_collection/one2n-sre-bootcamp.postman_collection.json`
-   - Click **Import** in Postman and select this file.
-
-2. Execute API requests:
-   - Use the available endpoints to perform CRUD operations.
-   - Check the responses to validate the API functionality.
-
