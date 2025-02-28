@@ -1,0 +1,42 @@
+clusterSecretStore:
+  name: student-api-cluster-secretstore
+  namespace: student-api
+  vault:
+    server: "http://vault.vault.svc.cluster.local:8200"  # Change as needed
+    path: "secret"
+    version: "v2"
+    auth:
+      tokenSecretRef:
+        name: vault-token
+        key: token
+        namespace: external-secrets  # Adjust if needed
+
+externalSecret:
+  name: db-secrets
+  namespace: student-api
+  secretStoreRef:
+    name: student-api-cluster-secretstore
+    kind: ClusterSecretStore
+  target:
+    name: db-secrets
+  data:
+    - secretKey: username
+      remoteRef:
+        key: "secret/db-creds"
+        property: "username"
+    - secretKey: password
+      remoteRef:
+        key: "secret/db-creds"
+        property: "password"
+    - secretKey: db-url
+      remoteRef:
+        key: "secret/db-creds"
+        property: "db-url"
+    - secretKey: root-password
+      remoteRef:
+        key: "secret/db-creds"
+        property: "root-password"
+    - secretKey: database
+      remoteRef:
+        key: "secret/db-creds"
+        property: "database"
