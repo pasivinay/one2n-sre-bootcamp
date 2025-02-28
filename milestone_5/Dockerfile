@@ -4,7 +4,6 @@ FROM python:3.12-alpine AS builder
 # Set working directory
 WORKDIR /app
 
-
 # Create user and set ownership and permissions as required
 RUN adduser -D flask && chown -R flask /app
 
