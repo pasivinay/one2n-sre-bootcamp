@@ -1,3 +1,0 @@
-app/*.log
-app/test*
-app/.env
