@@ -77,16 +77,12 @@ PyMySQL==1.1.1
     vagrant ssh
     ```
 
-9. The API will be available at `http://127.0.0.1:8080/`.
+9. Clear the vagrant box with:
+    ```bash
+    vagrant destroy
+    ```
 
-
-## Additional Information  
-- The workflow configuration can be found in `.github/workflows/ci-pipeline.yml`.  
-- Ensure you have the necessary environment variables and secrets configured in your repository settings (`Settings → Secrets and variables → Actions`).  
-- You can monitor workflow progress, view logs, and troubleshoot failures from the **Actions** tab.
-
-For any modifications to the pipeline, update the `.yml` file accordingly and commit the changes.
-
+10. The API will be available at `http://127.0.0.1:8080/`.
 
 
 ## API Endpoints
