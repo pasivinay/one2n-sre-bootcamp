@@ -2,56 +2,34 @@
 
 ## Project Description
 
-This project is a simple CRUD API designed for managing student records. The API is built using Python and Flask, following best practices for RESTful API design and the Twelve-Factor App methodology. It provides functionality to create, read, update, and delete student records while ensuring proper API versioning, structured logging, and configuration management using environment variables.
-
-The API is container-ready, follows dependency management practices, and supports database migrations to maintain schema consistency.
+This project focuses on deploying our REST API and its dependencies using Helm charts for better scalability and maintainability. We will convert existing Kubernetes manifests into structured Helm charts, ensuring a reusable deployment process. Community-managed charts can be used for services like the database and HashiCorp Vault, but maintaining local copies allows for customization. By the end, our entire stack will be managed via Helm, replacing manual Kubernetes manifests.
 
 ## Prerequisites
 
 Before proceeding, ensure you have the following installed on your system:
 
-- Python 3.8+
-- pip (Python package manager)
 - Docker
 - minikube cluster (Follow milestone 6 to provision required nodes)
 - helm
 - vault
-- Dockerhub account
-- Docker logged in with dockerhub account
-- Virtualenv (Recommended for managing dependencies)
-- Make (for executing build and run commands)
-- PostgreSQL or SQLite (for database)
 
-## Requirements File (`requirements.txt`)
-
-The project dependencies are managed through `requirements.txt`. Below is the content of this file:
-
-```
-Flask==3.1.0
-Flask-Migrate==4.1.0
-Flask-SQLAlchemy==3.1.1
-python-dotenv==1.0.1
-pytest==8.3.4
-PyMySQL==1.1.1
-
-```
 
 ## Setup Instructions
 
-1. Clone the repository and switch to `milestone_7` branch:
+1. Clone the repository and switch to `milestone_8` branch:
     ```bash
     git clone https://github.com/pasivinay/one2n-sre-bootcamp.git
-    cd one2n-sre-bootcamp/milestone_7
+    cd one2n-sre-bootcamp/milestone_8
     ```
 
 2. Deploy Namespaces:
     ```bash
-    kubectl create -f ./k8s-manifests/namespaces/namespaces.yml
+    helm install namespaces helm/namespaces
     ```
 
-3. Provision the vault server form kubernetes manifest file for vault:
+3. Provision the vault server form helm chart for vault:
     ```bash
-    kubectl create -f ./k8s-manifests/vault/vault.yml
+    helm install vault helm/vault -n vault
     ```
 ***
    #### Steps to Set Up Vault and Initialize secrets:
@@ -132,22 +110,22 @@ This will return an unseal key and a root token.
     helm install external-secrets external-secrets/external-secrets -n external-secrets
     ```
 
-6. Deploy ClusterSecretStore and ExternalSecret Resources:
+6. Install ClusterSecretStore and ExternalSecret from eso helm chart :
 
     ```bash
-    kubectl create -f ./k8s-manifests/eso/cluster-secret-store.yml && kubectl create -f ./k8s-manifests/eso/external-secret.yml 
+    helm install eso helm/external-secrets-operator -n external-secrets
     ```
 
-7. Deploy Database Manifest:
+7. Deploy database helm chart:
 
     ```bash
-    kubectl create -f ./k8s-manifests/database/database.yml
+    helm install database helm/database -n student-api
     ```
 
 8. Deploy Application Manifest:
 
     ```bash
-    kubectl create -f ./k8s-manifests/application/application.yaml
+    helm install student-api helm/application -n student-api
     ```
 
 9. Expose Application Service on Localhost:
@@ -203,7 +181,7 @@ This will return an unseal key and a root token.
 ## Using Postman for API Testing
 
 1. Open Postman and import the collection file:
-   - Navigate to `milestone_7/postman_collection/one2n-sre-bootcamp.postman_collection.json`
+   - Navigate to `milestone_8/postman_collection/one2n-sre-bootcamp.postman_collection.json`
    - Click **Import** in Postman and select this file.
 
 2. Execute API requests:
