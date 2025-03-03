@@ -1,0 +1,97 @@
+name: tag update
+
+on:
+  push:
+    paths:
+      - 'milestone_9'
+      - '.github/workflows/'
+
+  workflow_dispatch:   # Allows manual execution of the workflow from the GitHub Actions UI
+    inputs:
+      tag:
+        description: 'Version tag'
+        required: true
+        type: string
+
+defaults:
+  run:
+    shell: bash
+    working-directory: milestone_9  # Set default working directory for all steps to 'milestone_4'
+
+jobs:
+  build:
+    # Use a self-hosted runner instead of GitHub-hosted runners
+    runs-on: self-hosted
+    steps:
+
+      # Clone the repository into the runner workspace
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      # Ensure correct file ownership in the self-hosted runner
+      - name: Chown user
+        run: |
+          sudo chown -R $USER:$USER $GITHUB_WORKSPACE  
+
+      # Install and use Python 3.12
+      - name: Set up Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      # Install required Python dependencies
+      - name: Build dependencies
+        run: pip install -r requirements.txt  
+
+      # Dynamically create an .env file using secrets
+      - name: Create .env File
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+        run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
+          echo "MYSQL_USER=${{ secrets.MYSQL_USER }}" >> .env
+          echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" >> .env
+          echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" >> .env
+          echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
+
+      # Run unit tests to ensure the application works as expected
+      - name: Run Tests
+        run: |
+          make test
+
+      # Perform code linting to enforce coding standards
+      - name: Run Code Linting
+        run: |
+          make lint
+
+      # Logs into DockerHub using credentials stored in GitHub secrets and variables
+      - name: Login to DockerHub
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | sudo docker login -u "${{ vars.DOCKER_USERNAME }}" --password-stdin
+
+      # Build the API Docker image with the given version
+      - name: Build API Image
+        run: |
+          make build-api VERSION=${{ inputs.tag }}
+
+      # Tags and pushes the built Docker image to DockerHub
+      - name: Push Docker Image
+        run: |
+          make tag-push VERSION=${{ inputs.tag }} USERNAME=${{ vars.DOCKER_USERNAME }}
+
+
+      - name: Update image tag in values.yaml
+        run: |
+            sed -i 's/tag: ".*"/tag: "${{ env.tag }}"/g' helm/application/values.yaml 
+        
+      - name: Commit and push updated values.yaml
+        run: |
+            git config --local user.email "vinay.pasi@one2n.in"
+            git config --local user.name "Vinay Pasi"
+            git add milestone_9/helm/applicaiton/values.yaml
+            git commit -m "Updated image tag to ${{ env.tag }}"
+            git push
