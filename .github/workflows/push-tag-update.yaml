@@ -16,7 +16,7 @@ on:
     #     type: string
 
 env:
-  tag: 1.0.1
+  tag: 1.0.0
 
 defaults:
   run:
