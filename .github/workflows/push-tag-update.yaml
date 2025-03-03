@@ -2,21 +2,26 @@ name: tag update
 
 on:
   push:
+    branches:
+      - milestone_9
     paths:
       - 'milestone_9'
-      - '.github/workflows/'
+      - '.github/workflows/push-tag-update.yaml'
 
   workflow_dispatch:   # Allows manual execution of the workflow from the GitHub Actions UI
-    inputs:
-      tag:
-        description: 'Version tag'
-        required: true
-        type: string
+    # inputs:
+    #   tag:
+    #     description: 'Version tag'
+    #     required: true
+    #     type: string
+
+env:
+  tag: 1.0.2
 
 defaults:
   run:
     shell: bash
-    working-directory: milestone_9  # Set default working directory for all steps to 'milestone_4'
+    working-directory: milestone_4  # Set default working directory for all steps to 'milestone_4'
 
 jobs:
   build:
@@ -63,35 +68,38 @@ jobs:
         run: |
           make test
 
-      # Perform code linting to enforce coding standards
-      - name: Run Code Linting
+      # # Perform code linting to enforce coding standards
+      # - name: Run Code Linting
+      #   run: |
+      #     make lint
+
+      # Build the API Docker image with the given version
+      - name: Build API Image
         run: |
-          make lint
+          make build-api VERSION=${{ env.tag }}
 
       # Logs into DockerHub using credentials stored in GitHub secrets and variables
       - name: Login to DockerHub
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | sudo docker login -u "${{ vars.DOCKER_USERNAME }}" --password-stdin
 
-      # Build the API Docker image with the given version
-      - name: Build API Image
-        run: |
-          make build-api VERSION=${{ inputs.tag }}
 
       # Tags and pushes the built Docker image to DockerHub
       - name: Push Docker Image
         run: |
-          make tag-push VERSION=${{ inputs.tag }} USERNAME=${{ vars.DOCKER_USERNAME }}
+          make tag-push VERSION=${{ env.tag }} USERNAME=${{ vars.DOCKER_USERNAME }}
 
 
       - name: Update image tag in values.yaml
+        working-directory: milestone_9 
         run: |
             sed -i 's/tag: ".*"/tag: "${{ env.tag }}"/g' helm/application/values.yaml 
         
       - name: Commit and push updated values.yaml
+        working-directory: milestone_9 
         run: |
             git config --local user.email "vinay.pasi@one2n.in"
             git config --local user.name "Vinay Pasi"
-            git add milestone_9/helm/applicaiton/values.yaml
-            git commit -m "Updated image tag to ${{ env.tag }}"
+            git add helm/application/values.yaml
+            git commit -am "Updated image tag as ${{ env.tag }}"
             git push
