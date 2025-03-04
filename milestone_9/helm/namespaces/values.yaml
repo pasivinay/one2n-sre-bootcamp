@@ -1,0 +1,8 @@
+student-api:
+  namespace: student-api
+
+vault:
+  namespace: vault
+
+external-secrets:
+  namespace: external-secrets

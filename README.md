@@ -26,5 +26,8 @@ In milestone 7, we will be deploying our application on kubernetes cluster we cr
 ### **Milestone 8:  Deploy REST API & its dependent services in K8s**
 In Milestone 8, we will be deploying our application on kubernetes cluster with helm charts.
 
+### **Milestone 9:  Setup one-click deployments using ArgoCD**
+In Milestone 9, we will be deploying our application on kubernetes cluster with ArgoCD.
+
 ### **Setup Instructions for Milestones**
 To get started with specific milestone, navigate to the respective directory and follow the instructions in the README file located there.
