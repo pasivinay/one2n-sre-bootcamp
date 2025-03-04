@@ -68,10 +68,10 @@ jobs:
         run: |
           make test
 
-      # # Perform code linting to enforce coding standards
-      # - name: Run Code Linting
-      #   run: |
-      #     make lint
+      # Perform code linting to enforce coding standards
+      - name: Run Code Linting
+        run: |
+          make lint
 
       # Build the API Docker image with the given version
       - name: Build API Image
