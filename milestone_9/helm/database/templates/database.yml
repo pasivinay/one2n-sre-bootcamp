@@ -18,13 +18,13 @@ spec:
       containers:
         - name: {{ .Values.container.name }}
           image: {{ .Values.container.image.repository }}:{{ .Values.container.image.tag }}
-          resources:
-            limits:
-              cpu: {{ .Values.resources.limits.cpu }}
-              memory: {{ .Values.resources.limits.memory }}
-            requests:
-              cpu: {{ .Values.resources.requests.cpu }}
-              memory: {{ .Values.resources.requests.memory }}
+          # resources:
+          #   limits:
+          #     cpu: {{ .Values.resources.limits.cpu }}
+          #     memory: {{ .Values.resources.limits.memory }}
+          #   requests:
+          #     cpu: {{ .Values.resources.requests.cpu }}
+          #     memory: {{ .Values.resources.requests.memory }}
           ports:
             - containerPort: {{ .Values.container.port }}
           env:
