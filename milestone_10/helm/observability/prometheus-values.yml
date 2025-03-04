@@ -1,0 +1,49 @@
+prometheus:
+  prometheusSpec:
+    scrapeInterval: 15s
+    evaluationInterval: 15s
+    retention: 2d
+    storageSpec: {}
+    additionalScrapeConfigs:
+      - job_name: 'mysql-exporter'
+        metrics_path: /metrics
+        static_configs:
+          - targets: ['mysql-exporter-prometheus-mysql-exporter.student-api.svc:9104']
+      - job_name: 'blackbox-exporter'
+        metrics_path: /metrics
+        static_configs:
+          - targets: ['blackbox-exporter-prometheus-blackbox-exporter.observability.svc:9115']
+
+scrape_configs:
+  - job_name: 'healthcheck_probe'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]  # Look for a HTTP 200 response.
+    static_configs:
+      - targets:
+        - http://student-api.student-api.svc.cluster.local:5000/api/v1/healthcheck/ 
+
+grafana:
+  enabled: true
+  sidecar:
+    dashboards:
+      enabled: true
+    datasources:
+      enabled: true
+  persistence:
+    enabled: true
+    size: 1Gi
+    accessModes:
+      - ReadWriteOnce
+    storageClassName: ""
+
+kube-state-metrics:
+  enabled: true
+
+
+nodeExporter:
+  enabled: true
+
+
+alertmanager:
+  enabled: true
