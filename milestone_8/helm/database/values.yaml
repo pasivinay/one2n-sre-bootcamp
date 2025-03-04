@@ -1,0 +1,39 @@
+namespace: student-api
+
+app:
+  name: db
+
+replicaCount: 1
+
+deployment:
+  name: db
+
+container:
+  name: mysql
+  image:
+    repository: mysql
+    tag: "8.0-oracle"
+  port: 3306
+
+nodeSelector:
+  type: database
+
+configMap:
+  name: db-config
+
+secrets:
+  name: db-secrets
+
+service:
+  name: db
+  port: 3306
+  targetPort: 3306
+  clusterIP: None
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
