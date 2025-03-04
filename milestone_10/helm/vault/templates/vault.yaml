@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault-config
+  namespace: vault
+data:
+  config.json: {{ .Values.vault_local_config | toJson | quote }}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.app.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app.name }}
+    spec:
+      nodeSelector:
+        type: {{ .Values.nodeSelector.type }}
+      containers:
+        - name: {{ .Values.app.name }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          ports:
+            - containerPort: 8200
+          env:
+            - name: VAULT_API_ADDR
+              value: {{ .Values.env.vault_api_addr }}
+          command:
+            - "vault"
+            - "server"
+            - "-config=/vault/config/config.json"
+          volumeMounts:
+            - name: vault-storage
+              mountPath: /vault/file
+            - name: vault-config
+              mountPath: /vault/config
+      volumes:
+        - name: vault-storage
+          persistentVolumeClaim:
+            claimName: vault-pvc
+        - name: vault-config
+          configMap:
+            name: vault-config
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vault-pv
+  namespace: {{ .Values.namespace }}
+spec:
+  storageClassName: manual
+  capacity:
+    storage: {{ .Values.pv.capacity }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.pv.hostPath }}
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vault-pvc
+  namespace: {{ .Values.namespace }}
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.pvc.storage }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.app.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: {{ .Values.app.name }}
+  ports:
+    - protocol: TCP
+      port: 8200
+      targetPort: 8200
