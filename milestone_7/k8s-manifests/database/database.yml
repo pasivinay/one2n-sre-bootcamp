@@ -18,6 +18,13 @@ spec:
       containers:
         - name: mysql
           image: mysql:8.0-oracle
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
           ports:
             - containerPort: 3306
           env:

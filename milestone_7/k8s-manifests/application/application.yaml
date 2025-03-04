@@ -30,6 +30,13 @@ spec:
         - name: student-api
           image: pasivinay/student-api:1.0.1
           imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
           ports:
             - containerPort: 8080
           env:
