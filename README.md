@@ -20,5 +20,8 @@ In Milestone 5, we deploy our REST API along with its dependent services on a va
 ### **Milestone 6:  Setup Kubernetes cluster**
 With milestone 6, we move towards orchestration with kubernetes. We install minikube and configure 3 nodes .
 
+### **Milestone 7:  Deploy REST API & its dependent services in K8s**
+In milestone 7, we will be deploying our application on kubernetes cluster we created in milestone 6.
+
 ### **Setup Instructions for Milestones**
 To get started with specific milestone, navigate to the respective directory and follow the instructions in the README file located there.
