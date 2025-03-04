@@ -29,3 +29,11 @@ service:
   port: 3306
   targetPort: 3306
   clusterIP: None
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
