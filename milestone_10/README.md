@@ -55,11 +55,15 @@ Before proceeding, ensure you have the following pre-requisities available and i
 
 6. Install MySql exporter:
     ```bash
-    helm install mysql-exporter prometheus-community/prometheus-mysql-exporter -f helm/observability/mysql-exported-values.yaml \
-  --namespace student-api
+    helm install mysql-exporter prometheus-community/prometheus-mysql-exporter -f helm/observability/ mysql-exported-values.yaml --namespace student-api
     ```
 
-7. Access grafana dashboard from host at `http://127.0.0.1:3000/` . Login with admin user and password retrieved at step 3.
+7. Install blackbox exporter exporter:
+    ```bash
+    helm install blackbox-exporter prometheus-community/prometheus-blackbox-exporter -f helm/observability/blackbox-exporter.yaml --namespace observability
+    ```
+
+8. Access grafana dashboard from host at `http://127.0.0.1:3000/` . Login with admin user and password retrieved at step 3.
 
 
 
