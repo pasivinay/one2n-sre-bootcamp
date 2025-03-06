@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: student-api
+  namespace: student-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: student-api
+  template:
+    metadata:
+      labels:
+        app: student-api
+    spec:
+      nodeSelector:
+        type: application
+      initContainers:
+        - name: db-migrations
+          image: pasivinay/student-api:1.0.1
+          imagePullPolicy: Always
+          command: ["flask", "db", "upgrade"]
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: db-url
+      containers:
+        - name: student-api
+          image: pasivinay/student-api:1.0.1
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: db-url
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: student-api
+  namespace: student-api
+spec:
+  type: NodePort
+  selector:
+    app: student-api
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+
+---

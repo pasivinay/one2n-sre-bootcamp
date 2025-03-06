@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault-config
+  namespace: vault
+data:
+  config.json: |
+    {
+      "storage": { "file": { "path": "/vault/data" } },
+      "listener":
+        [{ "tcp": { "address": "0.0.0.0:8200", "tls_disable": true } }],
+      "default_lease_ttl": "168h",
+      "max_lease_ttl": "720h",
+      "ui": true,
+      "disable_mlock": "true",
+      "api_addr": " http://127.0.0.1:8200",
+    }
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault
+  namespace: vault
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vault
+  template:
+    metadata:
+      labels:
+        app: vault
+    spec:
+      nodeSelector:
+        type: dependent_services
+      containers:
+        - name: vault
+          image: hashicorp/vault
+          ports:
+            - containerPort: 8200
+          env:
+            - name: VAULT_API_ADDR
+              value: "http://127.0.0.1:8200"
+          command:
+            - "vault"
+            - "server"
+            - "-config=/vault/config/config.json"
+          volumeMounts:
+            - name: vault-storage
+              mountPath: /vault/data
+            - name: vault-config
+              mountPath: /vault/config
+      volumes:
+        - name: vault-storage
+          persistentVolumeClaim:
+            claimName: vault-pvc
+        - name: vault-config
+          configMap:
+            name: vault-config
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vault-pv
+  namespace: vault
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/data/vault
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vault-pvc
+  namespace: vault
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vault
+  namespace: vault
+spec:
+  selector:
+    app: vault
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8200
+      targetPort: 8200
+      nodePort: 30080
