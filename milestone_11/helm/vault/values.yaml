@@ -1,0 +1,33 @@
+vault_local_config: {
+      "storage": { "file": { "path": "/vault/data" } },
+      "listener":
+        [{ "tcp": { "address": "0.0.0.0:8200", "tls_disable": true } }],
+      "default_lease_ttl": "168h",
+      "max_lease_ttl": "720h",
+      "ui": true,
+      "disable_mlock": "true"
+    }
+
+app:
+  name: vault
+
+replicaCount: 1
+
+image:
+  repository: hashicorp/vault
+  tag: latest
+
+env:
+  vault_api_addr: "http://127.0.0.1:8200"
+
+namespace: vault
+
+nodeSelector:
+  type: dependent_services
+
+pv:
+  capacity: "5Gi"
+  hostPath: "/mnt/data/vault"
+
+pvc:
+  storage: "2Gi"

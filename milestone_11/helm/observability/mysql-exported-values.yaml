@@ -1,0 +1,6 @@
+mysql:
+  host: "db"
+  user: "student"
+  existingPasswordSecret:
+    name: "db-secrets"
+    key: "password"
