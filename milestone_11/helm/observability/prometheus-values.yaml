@@ -1,0 +1,254 @@
+prometheus:
+  prometheusSpec:
+    scrapeInterval: 15s
+    evaluationInterval: 15s
+    retention: 2d
+    storageSpec: {}
+    additionalScrapeConfigs:
+      - job_name: 'mysql-exporter'
+        metrics_path: /metrics
+        static_configs:
+          - targets: ['mysql-exporter-prometheus-mysql-exporter.student-api.svc:9104']
+      - job_name: 'blackbox-exporter'
+        metrics_path: /metrics
+        static_configs:
+          - targets: ['blackbox-exporter-prometheus-blackbox-exporter.observability.svc:9115']
+      - job_name: 'healthcheck_probe'
+        metrics_path: /probe
+        params:
+          module: [http_2xx]  # Look for a HTTP 200 response.
+        static_configs:
+          - targets:
+            - http://student-api.student-api.svc.cluster.local:5000/api/v1/healthcheck/ 
+        relabel_configs:
+          - source_labels: [__address__]
+            target_label: __param_target
+          - source_labels: [__param_target]
+            target_label: instance
+          - target_label: __address__
+            replacement: blackbox-exporter-prometheus-blackbox-exporter.observability.svc:9115  # The blackbox exporter's real hostname:port.
+
+grafana:
+  dashboardProviders:
+   dashboardproviders.yaml:
+     apiVersion: 1
+     providers:
+     - name: 'default'
+       orgId: 1
+       folder: ''
+       type: file
+       disableDeletion: false
+       editable: true
+       updateIntervalSeconds: 10
+       options:
+         path: /var/lib/grafana/dashboards/default
+  dashboards:
+    default:
+      custom-dashboard:
+        file: dashboards/database_metrics.json
+  enabled: true
+  sidecar:
+    dashboards:
+      enabled: true
+    datasources:
+      enabled: true
+  persistence:
+    enabled: true
+    size: 1Gi
+    accessModes:
+      - ReadWriteOnce
+    storageClassName: ""
+
+kube-state-metrics:
+  enabled: true
+
+
+nodeExporter:
+  enabled: true
+
+
+alertmanager:
+  enabled: true
+  config:
+    route:
+      receiver: 'slack-notifications'
+      group_by: [type]
+      routes:
+      - receiver: 'slack-notifications'
+        matchers:
+          - type="one2n-bootcamp"
+    receivers:
+    - name: 'slack-notifications'
+      slack_configs:
+      - channel: '#vinay-bootcamp'
+        send_resolved: true
+        title: |-
+          [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }} for {{ .CommonLabels.job }}
+          {{- if gt (len .CommonLabels) (len .GroupLabels) -}}
+            {{" "}}(
+            {{- with .CommonLabels.Remove .GroupLabels.Names }}
+              {{- range $index, $label := .SortedPairs -}}
+                {{ if $index }}, {{ end }}
+                {{- $label.Name }}="{{ $label.Value -}}"
+              {{- end }}
+            {{- end -}}
+            )
+          {{- end }}
+        text: >-
+          {{ range .Alerts -}}
+          *Alert:* {{ .Annotations.title }}{{ if .Labels.severity }} - `{{ .Labels.severity }}`{{ end }}
+
+          *Description:* {{ .Annotations.description }}
+
+          *Details:*
+            {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+            {{ end }}
+          {{ end }}
+
+    global:
+      resolve_timeout: 1m
+      slack_api_url: "https://hooks.slack.com/services/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"
+
+additionalPrometheusRulesMap:
+  my-rule:
+    groups:
+    - name: one2n-bootcamp.rules
+      rules:
+
+      ### 1. High CPU & Disk Utilization (Node Exporter)
+      - alert: HighCPUUsageWarning
+        expr: |
+          100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[1m])) * 100) > 20
+        for: 1m
+        labels:
+          severity: warning
+          type: one2n-bootcamp
+        annotations:
+          summary: "CPU Usage High (Warning)"
+          description: "The CPU usage on instance {{ $labels.instance }} has exceeded 80% for 5 minutes. System performance may degrade. Investigate running processes, optimize workloads, or scale resources."
+      
+      - alert: HighCPUUsageCritical
+        expr: |
+          100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[1m])) * 100) > 30
+        for: 1m
+        labels:
+          severity: critical
+          type: one2n-bootcamp
+        annotations:
+          summary: "CPU Overloaded (Critical)"
+          description: "CPU usage on {{ $labels.instance }} is above 90% for 1m! System performance may crash. **Action Needed:** Reduce workload, allocate more resources, or scale up your infrastructure!"
+
+      - alert: HighDiskUsageWarning
+        expr: |
+          (100 - (node_filesystem_avail_bytes / node_filesystem_size_bytes * 100)) > 20
+        for: 1m
+        labels:
+          severity: warning
+          type: one2n-bootcamp
+        annotations:
+          summary: "⚠️ Disk Usage High (Warning)"
+          description: "Disk usage on instance {{ $labels.instance }} is above 80% for 5 minutes. Monitor storage trends and consider cleanup or expansion."
+
+      - alert: HighDiskUsageCritical
+        expr: |
+          (100 - (node_filesystem_avail_bytes / node_filesystem_size_bytes * 100)) > 20
+        for: 1m
+        labels:
+          severity: critical
+          type: one2n-bootcamp
+        annotations:
+          summary: "Disk Almost Full! (Critical)"
+          description: "Disk usage on {{ $labels.instance }} exceeded 90%! Immediate action required: Free up space or add more storage to avoid failures."
+
+      ### 2. Spike in Error Rate (Using Kube-State-Metrics & MySQL Exporter)
+      - alert: HighPodErrorRate
+        expr: |
+          sum by(namespace, pod) (rate(kube_pod_container_status_restarts_total[1m])) > 3
+        for: 1m
+        labels:
+          severity: critical
+          type: one2n-bootcamp
+        annotations:
+          summary: "High Pod Restart Rate!"
+          description: "Pods in {{ $labels.namespace }} are restarting frequently (>3 times in 5 minutes). Investigate logs for errors and resource constraints."
+
+      - alert: HighDBErrorRate
+        expr: |
+          rate(mysql_global_status_errors[1m]) > 5
+        for: 1m
+        labels:
+          severity: warning
+          type: one2n-bootcamp
+        annotations:
+          summary: "Database Error Rate Spike"
+          description: "MySQL is reporting an increased error rate (>5 errors/min). Possible query failures or connection issues. Investigate slow queries, locks, or authentication failures."
+
+      ### 3. Latency Issues (Blackbox Exporter for Endpoint Probing)
+      - alert: HighLatencyP90
+        expr: |
+          histogram_quantile(0.90, rate(probe_duration_seconds[1m])) > 0.5
+        for: 1m
+        labels:
+          severity: warning
+          type: one2n-bootcamp
+        annotations:
+          summary: "Increased Latency (p90)"
+          description: "90% of requests are taking longer than 500ms. This may impact user experience. Investigate API response times and check for backend delays."
+
+      - alert: HighLatencyP99
+        expr: |
+          histogram_quantile(0.99, rate(probe_duration_seconds[1m])) > 1
+        for: 1m
+        labels:
+          severity: critical
+          type: one2n-bootcamp
+        annotations:
+          summary: "Severe Latency Issue (p99)"
+          description: "99% of requests are taking longer than 1s! Performance degradation detected. Check API, database queries, or infrastructure bottlenecks."
+
+      ### 4. Traffic Spike Alert (Using Blackbox Exporter)
+      - alert: HighTrafficWarning
+        expr: |
+          increase(probe_http_status_code{status_code=~"2.."}[1m]) > 2 * (increase(probe_http_status_code{status_code=~"2.."}[1m] offset 1m))
+        for: 1m
+        labels:
+          severity: warning
+          type: one2n-bootcamp
+        annotations:
+          summary: "Sudden Traffic Surge!"
+          description: "Traffic has **doubled** in the last 5 minutes! If unexpected, verify for DDoS, bot activity, or application misconfiguration."
+
+      - alert: HighTrafficCritical
+        expr: |
+          increase(probe_http_status_code{status_code=~"2.."}[1m]) > 3 * (increase(probe_http_status_code{status_code=~"2.."}[1m] offset 1m))
+        for: 1m
+        labels:
+          severity: critical
+          type: one2n-bootcamp
+        annotations:
+          summary: "Major Traffic Surge!"
+          description: "Traffic **tripled** in 1m! System could be overwhelmed. **Action Required:** Validate autoscaling, rate-limiting, or check for attacks."
+
+      ### 5. Critical Service Restarts (DB, Vault, ArgoCD - Using Kube-State-Metrics)
+      - alert: FrequentServiceRestarts
+        expr: |
+          increase(kube_pod_container_status_restarts_total{pod=~"(mysql|vault|argocd)"}[1m]) > 1
+        for: 1m
+        labels:
+          severity: critical
+          type: one2n-bootcamp
+        annotations:
+          summary: "Service Restart Alert!"
+          description: "One of **MySQL, Vault, or ArgoCD** has restarted multiple times in 1m! Immediate action required: Check logs for failures, crash loops, or resource issues."
+
+      ### 6. Blackbox Endpoint Down Alert
+      - alert: EndpointDown
+        expr: |
+          probe_success == 0
+        for: 1m
+        labels:
+          severity: critical
+          type: one2n-bootcamp
+        annotations:
+          summary: "Service Down!"
+          description: "The monitored endpoint **{{ $labels.instance }}** is unreachable! This could indicate downtime or network issues. Investigate immediately!"
