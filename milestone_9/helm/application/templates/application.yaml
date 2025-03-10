@@ -14,7 +14,7 @@ spec:
         app: student-api
     spec:
       nodeSelector:
-        type: application
+        type: {{ .Values.deployment.nodeSelector.type }}
       initContainers:
         - name: db-migrations
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
