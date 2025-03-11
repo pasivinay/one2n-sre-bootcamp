@@ -1,0 +1,80 @@
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-eso
+  namespace: argocd
+spec:
+  source:
+    repoURL: https://github.com/pasivinay/one2n-sre-bootcamp.git  
+    targetRevision: milestone_9
+    path: milestone_9/helm/external-secrets-operator   
+    helm:
+      valueFiles:
+        - values.yaml                
+
+  project: default
+
+  destination:
+    name: ''
+    namespace: student-api  
+    server: https://kubernetes.default.svc  
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-db
+  namespace: argocd
+spec:
+  source:
+    repoURL: https://github.com/pasivinay/one2n-sre-bootcamp.git  
+    targetRevision: milestone_9
+    path: milestone_9/helm/database   
+    helm:
+      valueFiles:
+        - values.yaml                
+
+  project: default
+
+  destination:
+    name: ''
+    namespace: student-api  
+    server: https://kubernetes.default.svc  
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-application
+  namespace: argocd
+spec:
+  source:
+    repoURL: https://github.com/pasivinay/one2n-sre-bootcamp.git  
+    targetRevision: milestone_9
+    path: milestone_9/helm/application   
+    helm:
+      valueFiles:
+        - values.yaml                
+
+  project: default
+
+  destination:
+    name: ''
+    namespace: student-api  
+    server: https://kubernetes.default.svc  
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
