@@ -27,6 +27,7 @@ In milestone 7, we will be deploying our application on kubernetes cluster we cr
 In Milestone 8, we will be deploying our application on kubernetes cluster with helm charts.
 
 ### **Milestone 9: Setup one-click deployments using ArgoCD**
+### **Milestone 9: Setup one-click deployments using ArgoCD**
 In Milestone 9, we will be deploying our application on kubernetes cluster with ArgoCD.
 
 ### **Milestone 10: Setup an observability stack**
